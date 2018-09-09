@@ -46,6 +46,8 @@ Let's load up the data for the 2011 season.
 
 ```{r load-data}
 data(mlb11)
+
+
 ```
 
 In addition to runs scored, there are seven traditionally used variables in the 
@@ -72,6 +74,8 @@ work with the three newer variables on your own.
 </ol>
 ```{r runs-vs-at_bats}
 # type your code for Question 2 here, and Knit
+
+ggplot(data = mlb11, aes(x = at_bats, y = runs)) + geom_point()
 
 ```
 
@@ -147,6 +151,9 @@ the sum of squares.  Run the function several times.  Report your smallest sum
 of squares.
 </div>
 
+My smallest Sum of Squares:  124165.3
+Actual least Sum of Squares (adding in leastSquares = TRUE value): Sum of Squares: 123721.9
+
 ## The linear model
 
 It is rather cumbersome to try to get the correct least squares line, i.e. the 
@@ -179,7 +186,7 @@ With this table, we can write down the least squares regression line for the
 linear model:
 
 \[
-  \hat{y} = -2789.2429 + 0.6305 \times at\_bats
+  \widehat{runs} = -2789.2429 + 0.6305 \times at\_bats
 \]
 
 One last piece of information we will discuss from the summary output is the 
@@ -198,6 +205,9 @@ explained by at-bats.
 </ol>
 ```{r homeruns-vs-runs}
 # type your code for Question 4 here, and Knit
+
+m2 <- lm(runs ~ homeruns, data = mlb11)
+summary(m2)
 
 ```
 
@@ -245,6 +255,19 @@ value of the `runs variable for that observation.
 </ol>
 ```{r residual}
 # type your code for Question 5 here, and Knit
+
+runs_obs <- mlb11 %>%
+  filter(at_bats == 5579) %>%
+  select(runs)
+
+b0 = -2789.243
+b1 = 0.6305
+x_at_bats = 5579
+runs_pred = b0 + b1 * x_at_bats
+
+runs_obs - runs_pred
+
+         
 
 ```
 
@@ -317,6 +340,12 @@ does there seem to be a linear relationship?
 ```{r runs-vs-sth-else}
 # type your code for the Exercise here, and Knit
 
+m3 <- lm(data = mlb11, runs ~ strikeouts)
+
+ggplot(data = mlb11, aes(x = strikeouts, y = runs)) +
+  geom_point() +
+  stat_smooth(method = "lm")
+
 ```
 
 <div id="exercise">
@@ -327,6 +356,9 @@ can you tell?
 </div>
 ```{r pick-model}
 # type your code for the Exercise here, and Knit
+
+summary(m1)
+summary(m3)
 
 ```
 
