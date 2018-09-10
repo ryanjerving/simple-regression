@@ -354,6 +354,10 @@ ggplot(data = mlb11, aes(x = strikeouts, y = runs)) +
 compare. Does your variable seem to predict `runs` better than `at_bats`? How 
 can you tell?
 </div>
+
+The scatterplot above and the regression output below both suggest that strikeouts -- while evincing a moderate linear negative correlation with runs -- are not as strong a predictive analytic variable as at_bats. The $R^2$ value for runs as a function of strikeouts suggests that only 17% of the variability in runs can be explained by the number of strikeouts, while the $R^2$ for runs ~ at_bats is 37%.
+
+
 ```{r pick-model}
 # type your code for the Exercise here, and Knit
 
@@ -369,19 +373,34 @@ summary(m3)
 <li> wins </li>
 <li> batting average </li>
 </ol>
+
+Batting average ($R^2 = 0.6561$) just edges out hits ($R^2 = 0.6419$) as the best predictor of runs, according to the linear regression models built to compare both sets of correlations.
+
 ```{r runs-vs-others}
 # type your code for Question 9 here, and Knit
+
+summary(lm(data = mlb11, runs ~ bat_avg))
+
+ggplot(data = mlb11, aes(x = strikeouts, y = bat_avg)) +
+  geom_point() +
+  stat_smooth(method = "lm")
 
 ```
 
 10. Now examine the three newer variables.  These are the statistics used by the author of *Moneyball* to predict a teams success.  In general, are they more or less effective at predicting runs that the old variables?  Explain using appropriate graphical and numerical evidence.  Of all ten variables we've analyzed, which seems to be the best predictor of `runs`? 
 <ol>
-<li> on-base plus slugging (`new_obs`) </li>
-<li> slugging percentage (`new_slug`) </li> 
-<li> on-base percentage (`new_onbase`) </li>
+<li> on-base plus slugging (`new_obs`) -- $R^ = 0.9349&</li>
+<li> slugging percentage (`new_slug`) -- $R^ = 0.8969&</li> 
+<li> on-base percentage (`new_onbase`) -- $R^ = 0.8491&</li>
 </ol>
 ```{r runs-vs-new-vars}
 # type your code for Question 10 here, and Knit
+
+summary(lm(data = mlb11, runs ~ new_obs))
+
+ggplot(data = mlb11, aes(x = strikeouts, y = new_obs)) +
+  geom_point() +
+  stat_smooth(method = "lm")
 
 ```
 
@@ -392,6 +411,26 @@ variable you decided was the best predictor for runs.
 ```{r diag}
 # type your code for the Exercise here, and Knit
 
+m4 <- lm(data = mlb11, runs ~ new_obs)
+
+# Checking Linearity
+
+ggplot(data = m4,
+       aes(x = .fitted, y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  xlab("Fitted Values") + ylab("Residual Values")
+
+# Checking Normality with Histogram
+
+ggplot(data = m4, aes(x = .resid)) +
+  geom_histogram(binwidth = 15) +
+  xlab("Residuals")
+
+# Checking Normality with a Normal Probability Chart
+
+ggplot(data = m4, aes(sample = .resid)) +
+  stat_qq()
 ```
 
 <div id="license">
